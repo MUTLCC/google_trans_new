@@ -1,7 +1,8 @@
 import setuptools
+
 from google_trans_new import __version__
 
-with open("README.md", "r", encoding='utf-8') as f:
+with open("README.md", "r", encoding="utf-8") as f:
     long_desc = f.read()
 
 
@@ -15,13 +16,13 @@ setuptools.setup(
     author="lushan88a",
     description="google_trans_new",
     long_description=long_desc,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     url="https://github.com/lushan88a/google_trans_new",
     packages=setuptools.find_packages(),
-    install_requires=_requires_from_file('requirements.txt'),
+    install_requires=_requires_from_file("requirements.txt"),
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ]
+    ],
 )
