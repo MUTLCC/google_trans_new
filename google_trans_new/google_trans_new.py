@@ -105,7 +105,7 @@ class google_translator:
         else:
             self.url_suffix = url_suffix
         url_base = "https://translate.google.{}".format(self.url_suffix)
-        self.url = f'{url_base}/_/TranslateWebserverUi/data/batchexecute'
+        self.url = f"{url_base}/_/TranslateWebserverUi/data/batchexecute"
         self.timeout = timeout
 
     def _package_rpc(self, text, lang_src="auto", lang_tgt="auto"):
@@ -167,11 +167,15 @@ class google_translator:
                                 sentences = response[0][5]
                             else:  # only url
                                 sentences = response[0][0]
-                                return sentences if not pronounce else [sentences, None, None]
+                                return (
+                                    sentences
+                                    if not pronounce
+                                    else [sentences, None, None]
+                                )
                             translate_text = ""
                             for sentence in sentences:
                                 sentence = sentence[0]
-                                translate_text += f'{sentence.strip()} '
+                                translate_text += f"{sentence.strip()} "
                             translate_text = translate_text
                             if not pronounce:
                                 return translate_text
