@@ -105,7 +105,7 @@ class google_translator:
         else:
             self.url_suffix = url_suffix
         url_base = "https://translate.google.{}".format(self.url_suffix)
-        self.url = url_base + "/_/TranslateWebserverUi/data/batchexecute"
+        self.url = f'{url_base}/_/TranslateWebserverUi/data/batchexecute'
         self.timeout = timeout
 
     def _package_rpc(self, text, lang_src="auto", lang_tgt="auto"):
@@ -114,10 +114,7 @@ class google_translator:
         escaped_parameter = json.dumps(parameter, separators=(",", ":"))
         rpc = [[[random.choice(GOOGLE_TTS_RPC), escaped_parameter, None, "generic"]]]
         espaced_rpc = json.dumps(rpc, separators=(",", ":"))
-        # text_urldecode = quote(text.strip())
-        freq_initial = "f.req={}&".format(quote(espaced_rpc))
-        freq = freq_initial
-        return freq
+        return "f.req={}&".format(quote(espaced_rpc))
 
     def translate(self, text, lang_tgt="auto", lang_src="auto", pronounce=False):
         try:
@@ -131,7 +128,7 @@ class google_translator:
         text = str(text)
         if len(text) >= 5000:
             return "Warning: Can only detect less than 5000 characters"
-        if len(text) == 0:
+        if not text:
             return ""
         headers = {
             "Referer": "http://translate.google.{}/".format(self.url_suffix),
@@ -170,31 +167,24 @@ class google_translator:
                                 sentences = response[0][5]
                             else:  # only url
                                 sentences = response[0][0]
-                                if not pronounce:
-                                    return sentences
-                                elif pronounce:
-                                    return [sentences, None, None]
+                                return sentences if not pronounce else [sentences, None, None]
                             translate_text = ""
                             for sentence in sentences:
                                 sentence = sentence[0]
-                                translate_text += sentence.strip() + " "
+                                translate_text += f'{sentence.strip()} '
                             translate_text = translate_text
                             if not pronounce:
                                 return translate_text
-                            elif pronounce:
-                                pronounce_src = response_[0][0]
-                                pronounce_tgt = response_[1][0][0][1]
-                                return [translate_text, pronounce_src, pronounce_tgt]
+                            pronounce_src = response_[0][0]
+                            pronounce_tgt = response_[1][0][0][1]
+                            return [translate_text, pronounce_src, pronounce_tgt]
                         elif len(response) == 2:
-                            sentences = []
-                            for i in response:
-                                sentences.append(i[0])
+                            sentences = [i[0] for i in response]
                             if not pronounce:
                                 return sentences
-                            elif pronounce:
-                                pronounce_src = response_[0][0]
-                                pronounce_tgt = response_[1][0][0][1]
-                                return [sentences, pronounce_src, pronounce_tgt]
+                            pronounce_src = response_[0][0]
+                            pronounce_tgt = response_[1][0][0][1]
+                            return [sentences, pronounce_src, pronounce_tgt]
                     except Exception as e:
                         raise e
             r.raise_for_status()
@@ -211,7 +201,7 @@ class google_translator:
         text = str(text)
         if len(text) >= 5000:
             return log.debug("Warning: Can only detect less than 5000 characters")
-        if len(text) == 0:
+        if not text:
             return ""
         headers = {
             "Referer": "http://translate.google.{}/".format(self.url_suffix),
